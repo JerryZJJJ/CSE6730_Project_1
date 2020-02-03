@@ -31,33 +31,6 @@ def main():
 
     elevation_a, storage_a, power_a = simulation(x, n, h_zero, mif2, mif3, ra_m, dc_m, ne_m)
 
-    # x = np.arange(0, 8, 1)
-
-
-
-
-    # # plot when T is 1 day
-    # plt.figure(1)
-    # plt.plot(x, power[:, 0])
-    # plt.xlabel('season')
-    # plt.ylabel('energy generated')
-    # # plt.legend(['5th', '25th', '75th', '95th'])
-    # # plt.legend(['elevation', 'storage'])
-    # plt.title('Seasonal energy generated mean')
-    # plt.savefig('a1')
-    #
-    # plt.show()
-
-    # for i in range(8):
-    #     plt.hist(elevation_a[i, :])
-    #     # plt.xlabel('season')
-    #     # plt.ylabel('energy generated')
-    #     # plt.legend(['5th', '25th', '75th', '95th'])
-    #     # plt.legend(['elevation', 'storage'])
-    #     plt.title('season ' + str(i + 1) + ' elevation distribution')
-    #     plt.show()
-
-
     prob_mat = prob_cal(x, n, elevation_a)
     for i in range(np.size(prob_mat, 0)):
         print("probability of season " + str(i + 1) + " that over 178: " + "{:.4f}".format(prob_mat[i][1]) + '\n' +
