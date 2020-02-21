@@ -1,9 +1,10 @@
 from Event import *
 
-PLANE_ARRIVES, PLANE_LANDED, PLANE_DEPARTS, PLANE_TAKEOFF = 0, 1, 2, 3
-
 
 class AirportEvent(Event):
+
+    PLANE_ARRIVES, PLANE_LANDED, PLANE_DEPARTS, PLANE_TAKEOFF = 0, 1, 2, 3
+
     def __init__(self, plane, delay, handler, event_type, runway):
         super().__init__(delay, handler, event_type)
         self.m_plane = plane
