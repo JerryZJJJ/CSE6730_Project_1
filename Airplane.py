@@ -13,6 +13,9 @@ class Airplane(object):
         self.gas_speed_circulating = gas_speed_2
         self.m_number_passengers = random.randint(0, self.m_max_passengers) + 1
 
+    def set_number_passengers(self):
+        self.m_number_passengers = random.randint(0, self.m_max_passengers) + 1
+
     def cal_gas(self, duration, speed):
         self.gas_consumed = duration * speed
         return self.gas_consumed
