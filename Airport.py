@@ -1,5 +1,8 @@
-from EventHandler import *
+import EventHandler
+from AirportEvent import *
+import Simulator
 import queue
+import random
 
 
 class Airport(EventHandler):
@@ -7,9 +10,9 @@ class Airport(EventHandler):
     def __init__(self, name, runway_time_to_land, required_time_on_ground, runway_time_to_takeoff):
         self.m_in_the_air = 0
         self.m_on_the_ground = 0
-        self.m_land_1, m_land_2, m_takeoff_1 = True, True, True
+        self.m_land_1, self.m_land_2, self.m_takeoff_1 = True, True, True
         self.weather = True
-        self.weatherArray = [False, False, False, False, False, True, False, True, False, False]
+        self.weather_array = [False, False, False, False, False, True, False, True, False, False]
         self.duration = 10.0
         self.old_weather_time = 0.0
         self.m_flight_time = 0
@@ -60,3 +63,52 @@ class Airport(EventHandler):
         ]
 
         return matrix[a_1][a_2]
+
+    def handle(self, event):    # event = air event
+        if event.m_event_type is AirportEvent.PLANE_ARRIVES:
+            self.m_in_the_air += 1
+            event.m_arriving_time = Simulator.get_current_time()
+            print(Simulator.get_current_time() + ": " + event.m_plane.m_name + " arrived at " + self.m_airport_name)
+            if (Simulator.get_current_time() - self.old_weather_time) >= self.duration:
+                rnd = random.randint(len(self.weather_array))
+                self.weather = self.weather_array[rnd]
+                self.duration = 10 - (Simulator.get_current_time() - (self.old_weather_time + self.duration)) % 10
+                self.old_weather_time = Simulator.get_current_time()
+            if not self.weather:
+                temp = AirportEvent(event.m_plane, 1, self, AirportEvent.PLANE_ARRIVES, 3)
+                Simulator.schedule(temp)
+            else:
+                self.arriving_queue.put(event)
+                if self.m_land_1:
+                    self.m_land_1 = False
+                    first_arriving_event_1 = self.arriving_queue.get()  # airport Event
+                    print(Simulator.get_current_time() + ": " + event.m_plane.m_name + " start landing at the first landing runway of " + self.m_airport_name)
+                    first_arriving_event_1.m_arrived_time = Simulator.get_current_time()
+                    self.m_circling_time += first_arriving_event_1.get_wait_time()
+
+                    self.m_arriving_passengers += first_arriving_event_1.m_plane.m_number_passengers
+
+                    landed_event_1 = AirportEvent(first_arriving_event_1.m_plane, self.m_runway_time_to_land, self, AirportEvent.PLANE_LANDED, 0)
+                    Simulator.schedule(landed_event_1)
+
+                elif self.m_land_2:
+                    self.m_land_2 = False
+                    first_arriving_event_2 = self.arriving_queue.get()  # airport Event
+                    print(Simulator.get_current_time() + ": " + event.m_plane.m_name + " start landing at the first landing runway of " + self.m_airport_name)
+                    first_arriving_event_2.m_arrived_time = Simulator.get_current_time()
+                    self.m_circling_time += first_arriving_event_2.get_wait_time()
+
+                    self.m_arriving_passengers += first_arriving_event_2.m_plane.m_number_passengers
+
+                    landed_event_2 = AirportEvent(first_arriving_event_2.m_plane, self.m_runway_time_to_land, self, AirportEvent.PLANE_LANDED, 0)
+                    Simulator.schedule(landed_event_2)
+
+        # if event.m_event_type is AirportEvent.PLANE_TAKEOFF:
+
+
+
+
+
+
+
+
