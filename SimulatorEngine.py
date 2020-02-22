@@ -19,7 +19,7 @@ class SimulatorEngine(EventHandler):
     def handle(self, event):
         if event.m_event_type is SimulatorEvent.STOP_EVENT:
             self.m_running = False
-            print("Simulator stopping at time: " + event.m_time())
+            print("Simulator stopping at time: " + str(event.m_time))
         else:
             print("Invalid event type")
 
